@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { isThisTypeNode } from 'typescript';
 import { Bot } from '../bots/Bot';
 import { BulletDef } from '../def/BulletDef';
 import { Bullet } from '../entities/Bullet';
@@ -30,10 +31,20 @@ export class GameScene extends Phaser.Scene {
         this.events.on('startlevel', this.StartLevel, this);
         this.events.on('destroy', this.Dispose, this);
         this.events.on('firebullet', this.FireBullet, this);
-        this.events.on('bulet_hit', this.BulletHit, this);
+        this.events.on('bullet_hit', this.BulletHit, this);
+        this.events.on('bullet_blocked', this.BulletBlocked, this);
         this.input.on('pointerdown', this.Clicked, this);
+        this.events.on('shake', this.Shake, this);
+
+        this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
+        this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
 
         this.bot = new Bot(this);
+
+        //Scenes
+        this.scene.add('hud', HUDScene, false);
+        this.scene.launch('hud');
+        this.hudScene = this.scene.get('hud') as HUDScene;
         
         //Subsystems
         this.bgsub = new BackgroundSubsystem(this);
@@ -43,10 +54,6 @@ export class GameScene extends Phaser.Scene {
         this.playersub = new PlayerSubsystem(this);
 
 
-        //Scenes
-        this.scene.add('hud', HUDScene, false);
-        this.scene.launch('hud');
-        this.hudScene = this.scene.get('hud') as HUDScene;
 
         this.StartLevel();
     }
@@ -61,8 +68,14 @@ export class GameScene extends Phaser.Scene {
         this.events.removeListener('startlevel', this.StartLevel, this);
         this.events.removeListener('dispose', this.Dispose, this);
         this.events.removeListener('firebullet', this.FireBullet, this);
-        this.events.removeListener('bulet_hit', this.BulletHit, this);
+        this.events.removeListener('bullet_hit', this.BulletHit, this);
+        this.events.removeListener('bullet_blocked', this.BulletBlocked, this);
+
         this.input.removeListener('pointerdown', this.Clicked, this);
+        this.events.removeListener('shake', this.Shake, this);
+        this.input.keyboard.removeListener('keydown-SPACE', () => {this.shield.emit('shieldon');});
+        this.input.keyboard.removeListener('keyup-SPACE', () => {this.shield.emit('shieldoff');});
+
 
         this.bgsub.Dispose();
     }
@@ -114,6 +127,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     BulletHit(b:Bullet) {
+        if(this.shield.active && Phaser.Math.Distance.BetweenPoints(this.p, b.s) < b.radius + this.shield.radius) {
+            this.events.emit('bullet_blocked', b);
+        } else {
+            this.playersub.DamagePlayer(5);
+        }
+    }
+
+    BulletBlocked(b:Bullet) {
 
     }
 
@@ -125,5 +146,11 @@ export class GameScene extends Phaser.Scene {
         bd.xMotion = 100;
         bd.yMotion = 100;
         this.FireBullet(bd);
+    }
+    
+    Shake() {
+        // this.cameras.main.flash(100);
+        this.cameras.main.flash(800, 255,20,20, true);
+        this.cameras.main.shake(500, .02, true);
     }
 }

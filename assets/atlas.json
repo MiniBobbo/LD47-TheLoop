@@ -5,7 +5,7 @@
 			"format": "RGBA8888",
 			"size": {
 				"w": 962,
-				"h": 1689
+				"h": 1803
 			},
 			"scale": 1,
 			"frames": [
@@ -94,6 +94,27 @@
 					}
 				},
 				{
+					"filename": "wall",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 198,
+						"h": 180
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 198,
+						"h": 180
+					},
+					"frame": {
+						"x": 1,
+						"y": 1622,
+						"w": 198,
+						"h": 180
+					}
+				},
+				{
 					"filename": "cursor_flash_0",
 					"rotated": false,
 					"trimmed": false,
@@ -108,7 +129,7 @@
 						"h": 64
 					},
 					"frame": {
-						"x": 1,
+						"x": 201,
 						"y": 1622,
 						"w": 64,
 						"h": 64
@@ -129,31 +150,10 @@
 						"h": 33
 					},
 					"frame": {
-						"x": 67,
-						"y": 1622,
+						"x": 201,
+						"y": 1688,
 						"w": 270,
 						"h": 33
-					}
-				},
-				{
-					"filename": "bot1_flyright_0",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 312,
-						"h": 312
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 23,
-						"w": 248,
-						"h": 289
-					},
-					"frame": {
-						"x": 315,
-						"y": 1306,
-						"w": 248,
-						"h": 289
 					}
 				},
 				{
@@ -171,8 +171,8 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 339,
-						"y": 1597,
+						"x": 267,
+						"y": 1622,
 						"w": 32,
 						"h": 32
 					}
@@ -192,10 +192,52 @@
 						"h": 32
 					},
 					"frame": {
-						"x": 339,
-						"y": 1631,
+						"x": 301,
+						"y": 1622,
 						"w": 32,
 						"h": 32
+					}
+				},
+				{
+					"filename": "birdbot3",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 350,
+						"h": 350
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 27,
+						"w": 312,
+						"h": 314
+					},
+					"frame": {
+						"x": 315,
+						"y": 1306,
+						"w": 312,
+						"h": 314
+					}
+				},
+				{
+					"filename": "bot1_flyright_0",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 312,
+						"h": 312
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 23,
+						"w": 248,
+						"h": 289
+					},
+					"frame": {
+						"x": 629,
+						"y": 1306,
+						"w": 248,
+						"h": 289
 					}
 				},
 				{
@@ -213,31 +255,10 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 565,
-						"y": 1306,
+						"x": 629,
+						"y": 1597,
 						"w": 200,
 						"h": 200
-					}
-				},
-				{
-					"filename": "wall",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 198,
-						"h": 180
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 198,
-						"h": 180
-					},
-					"frame": {
-						"x": 565,
-						"y": 1508,
-						"w": 198,
-						"h": 180
 					}
 				}
 			]
@@ -246,6 +267,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:f05e5f6806d9083a1c44c8fff1ae9526:0e35c4b80e32c429dcf72fc0519d996f:cbce6b53f0f49e0bf15173c25c41f876$"
+		"smartupdate": "$TexturePacker:SmartUpdate:69a76ee76b383a55244179e20a19eae4:28d7ece7545c9ec9c3211f48517f8ea5:cbce6b53f0f49e0bf15173c25c41f876$"
 	}
 }

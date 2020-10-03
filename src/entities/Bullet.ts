@@ -10,6 +10,7 @@ export class Bullet {
     position:number = 0;
     xMotion:number = 0;
     yMotion:number = 0;
+    blockable:boolean = true;
     constructor(gs:GameScene) {
         this.gs = gs;
         this.s = this.gs.add.sprite(0,0, 'atlas', 'attack_0');
