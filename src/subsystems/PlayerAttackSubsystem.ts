@@ -42,13 +42,17 @@ export class PlayerAttackSubsystem {
         let b = this.GetBullet();
         let level = this.GetFireLevel();
         b.Fire(bd.x, bd.y, level);
-        this.CurrentFireDelay = this.FireDelay;
+        this.CurrentFireDelay = this.FireDelay * level;
         this.CurrentFireCharge = 0; 
         this.FireReady = false;
     }
 
     private GetFireLevel():number {
+        if(this.CurrentFireCharge < 50)
         return 1;
+        if(this.CurrentFireCharge < 100)
+        return 2;
+        return 3;
     }
 
     Update(dt:number) {

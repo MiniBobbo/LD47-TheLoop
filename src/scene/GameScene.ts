@@ -5,6 +5,7 @@ import { BulletDef } from '../def/BulletDef';
 import { PlayerBulletDef } from '../def/PlayerBulletDef';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
+import { BotFactory } from '../factory/BotFactory';
 import { AttacksSubsystem } from '../subsystems/AttacksSubsystem';
 import { BackgroundSubsystem } from '../subsystems/BackgroundSubsystem';
 import { PlayerAttackSubsystem } from '../subsystems/PlayerAttackSubsystem';
@@ -40,12 +41,12 @@ export class GameScene extends Phaser.Scene {
         this.input.on('pointerdown', this.Clicked, this);
         this.input.on('pointerup', this.ClickedOff, this);
         this.events.on('shake', this.Shake, this);
-        this.events.on('bot_check_hit', this.Shake, this);
+        this.events.on('shake_small', this.SmallShake, this);
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
 
-        this.bot = new Bot(this);
+        this.bot = BotFactory.GenerateBot('', this);
 
         //Scenes
         this.scene.add('hud', HUDScene, false);
@@ -80,6 +81,7 @@ export class GameScene extends Phaser.Scene {
 
         this.input.removeListener('pointerdown', this.Clicked, this);
         this.events.removeListener('shake', this.Shake, this);
+        this.events.removeListener('shake_small', this.SmallShake, this);
         this.input.keyboard.removeListener('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.removeListener('keyup-SPACE', () => {this.shield.emit('shieldoff');});
 
@@ -160,9 +162,10 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.shake(500, .02, true);
     }
 
-    CheckBotHit() {
-
+    SmallShake() {
+        this.cameras.main.shake(200, .01, true);
     }
+
 
     SetChargeLevel(level:number) {
 
