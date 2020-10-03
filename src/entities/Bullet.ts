@@ -11,6 +11,7 @@ export class Bullet {
     xMotion:number = 0;
     yMotion:number = 0;
     blockable:boolean = true;
+    rotationSpeed:number = 10;
     constructor(gs:GameScene) {
         this.gs = gs;
         this.s = this.gs.add.sprite(0,0, 'atlas', 'attack_0');
@@ -48,5 +49,6 @@ export class Bullet {
         this.s.setDepth(this.position + 200);
         let displaySize = 10 + (this.radius*2) * percentage;
         this.s.setDisplaySize(displaySize, displaySize);
+        this.s.angle += this.rotationSpeed;
     }
 }

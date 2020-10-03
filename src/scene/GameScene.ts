@@ -1,11 +1,13 @@
 import Phaser from 'phaser'
-import { isThisTypeNode } from 'typescript';
+import { isThisTypeNode, isThrowStatement } from 'typescript';
 import { Bot } from '../bots/Bot';
 import { BulletDef } from '../def/BulletDef';
+import { PlayerBulletDef } from '../def/PlayerBulletDef';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
 import { AttacksSubsystem } from '../subsystems/AttacksSubsystem';
 import { BackgroundSubsystem } from '../subsystems/BackgroundSubsystem';
+import { PlayerAttackSubsystem } from '../subsystems/PlayerAttackSubsystem';
 import { PlayerSubsystem } from '../subsystems/PlayerSubsystem';
 import { HUDScene } from './HUDScene';
 
@@ -18,6 +20,7 @@ export class GameScene extends Phaser.Scene {
     bgsub:BackgroundSubsystem;
     attacksub:AttacksSubsystem;
     playersub:PlayerSubsystem;
+    playerAttackSub:PlayerAttackSubsystem;
 
     //Scenes
     hudScene:HUDScene;
@@ -33,8 +36,11 @@ export class GameScene extends Phaser.Scene {
         this.events.on('firebullet', this.FireBullet, this);
         this.events.on('bullet_hit', this.BulletHit, this);
         this.events.on('bullet_blocked', this.BulletBlocked, this);
+        this.events.on('charge_level', this.SetChargeLevel, this);
         this.input.on('pointerdown', this.Clicked, this);
+        this.input.on('pointerup', this.ClickedOff, this);
         this.events.on('shake', this.Shake, this);
+        this.events.on('bot_check_hit', this.Shake, this);
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
@@ -52,7 +58,7 @@ export class GameScene extends Phaser.Scene {
 
         this.attacksub = new AttacksSubsystem(this);
         this.playersub = new PlayerSubsystem(this);
-
+        this.playerAttackSub =  new PlayerAttackSubsystem(this);
 
 
         this.StartLevel();
@@ -70,6 +76,7 @@ export class GameScene extends Phaser.Scene {
         this.events.removeListener('firebullet', this.FireBullet, this);
         this.events.removeListener('bullet_hit', this.BulletHit, this);
         this.events.removeListener('bullet_blocked', this.BulletBlocked, this);
+        this.events.removeListener('charge_level', this.SetChargeLevel, this);
 
         this.input.removeListener('pointerdown', this.Clicked, this);
         this.events.removeListener('shake', this.Shake, this);
@@ -88,7 +95,7 @@ export class GameScene extends Phaser.Scene {
         }, this);
 
         this.p = this.add.sprite(240, 135, 'atlas', 'cursor_flash_0')
-        .setDepth(1000);
+        .setDepth(1000).setAlpha(.75);
     
         // When locked, you will have to use the movementX and movementY properties of the pointer
         // (since a locked cursor's xy position does not update)
@@ -118,6 +125,7 @@ export class GameScene extends Phaser.Scene {
         //Update subsystems
         this.bgsub.update(dt);
         this.attacksub.Update(dt);
+        this.playerAttackSub.Update(dt);
 
         
     }
@@ -139,18 +147,24 @@ export class GameScene extends Phaser.Scene {
     }
 
     Clicked() {
-        console.log('clicked');
-        let bd = new BulletDef();
-        bd.x = this.p.x;
-        bd.y = this.p.y;
-        bd.xMotion = 100;
-        bd.yMotion = 100;
-        this.FireBullet(bd);
+        this.playerAttackSub.Firing = true;
+    }
+
+    ClickedOff() {
+        this.playerAttackSub.Firing = false;
     }
     
     Shake() {
         // this.cameras.main.flash(100);
         this.cameras.main.flash(800, 255,20,20, true);
         this.cameras.main.shake(500, .02, true);
+    }
+
+    CheckBotHit() {
+
+    }
+
+    SetChargeLevel(level:number) {
+
     }
 }
