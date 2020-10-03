@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { textChangeRangeIsUnchanged } from 'typescript';
 import { Bullet } from '../entities/Bullet';
+import { PlayerAttack } from '../entities/PlayerAttack';
 import { GameScene } from '../scene/GameScene';
 import { BotPiece } from './BotPeice';
 
@@ -8,6 +9,7 @@ export class Bot {
     c:Phaser.GameObjects.Container;
     gs:GameScene;
     baseName:string;
+    hitArea:Phaser.Geom.Rectangle;
     private basePiece:BotPiece;
     private pieces:Array<BotPiece>;
     constructor(gs:GameScene) {
@@ -16,7 +18,9 @@ export class Bot {
 
         this.pieces = [];
 
-        // this.gs.events.on('bot_check_hit', this.CheckHit, this);
+        this.hitArea = new Phaser.Geom.Rectangle(0,0,400,400);
+
+        this.gs.events.on('bot_check_hit', this.CheckHit, this);
     }
 
     AddPiece(piece:BotPiece) {
@@ -39,8 +43,26 @@ export class Bot {
         });
     }
 
-    CheckHit(b:Bullet) {
-        console.log('Check bot hit');
+    CheckHit(b:PlayerAttack) {
+        // this.hitArea.setPosition(this.c.x - this.hitArea.width /2, this.c.y- this.hitArea.height/2);
+        // if(!this.IsWithinBounds(b.s.x, b.s.y))
+            // return;
+        this.pieces.sort((a, b) => b.s.depth - a.s.depth);
+        // console.log(`Bullet at ${b.s.x}, ${b.s.y}.\nChecking against texture at ${b.s.x - this.c.x}, ${b.s.y - this.c.y}`);
+        let x = b.s.x - this.c.x;
+        let y = b.s.y - this.c.y;
+
+        for(let i = 0; i < this.pieces.length; i++) {
+            if(this.pieces[i].CheckHit(x,y)) {
+                b.EndBullet();
+                break;
+
+            }
+        }
+    }
+
+    private IsWithinBounds(x:number, y:number) {
+        return this.hitArea.contains(x,y);
     }
 
     Destroy() {

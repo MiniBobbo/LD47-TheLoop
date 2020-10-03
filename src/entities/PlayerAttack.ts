@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { isThisTypeNode } from 'typescript';
+import { EffectDef } from '../def/EffectDef';
 import { GameScene } from '../scene/GameScene';
 
 export class PlayerAttack {
@@ -50,6 +51,7 @@ export class PlayerAttack {
             this.position -= this.speed * (dt);
             this.UpdateVisual();
             if(!this.CheckedHitBot && this.position < 50) {
+                this.gs.events.emit('bot_check_hit', this);
             }
             if(this.position <= 0) {
                 if(!this.CheckedHitBot) {
@@ -57,10 +59,20 @@ export class PlayerAttack {
                     this.gs.events.emit('bot_check_hit', this);
                 }
                 // this.gs.events.emit('bot_check_hit', this);
-                this.available = true;
-                this.s.setVisible(false);
+                this.EndBullet();
+                let ed = new EffectDef();
+                ed.x = this.s.x;
+                ed.y = this.s.y;
+
+                this.gs.effectsub.PlayEffect(ed);
             }
         }
+    }
+
+    EndBullet() {
+        this.available = true;
+        this.s.setVisible(false);
+
     }
 
     private UpdateVisual() {

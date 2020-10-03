@@ -8,6 +8,7 @@ import { Shield } from '../entities/Shield';
 import { BotFactory } from '../factory/BotFactory';
 import { AttacksSubsystem } from '../subsystems/AttacksSubsystem';
 import { BackgroundSubsystem } from '../subsystems/BackgroundSubsystem';
+import { EffectSubsystem } from '../subsystems/EffectSubsystem';
 import { PlayerAttackSubsystem } from '../subsystems/PlayerAttackSubsystem';
 import { PlayerSubsystem } from '../subsystems/PlayerSubsystem';
 import { HUDScene } from './HUDScene';
@@ -22,6 +23,7 @@ export class GameScene extends Phaser.Scene {
     attacksub:AttacksSubsystem;
     playersub:PlayerSubsystem;
     playerAttackSub:PlayerAttackSubsystem;
+    effectsub:EffectSubsystem;
 
     //Scenes
     hudScene:HUDScene;
@@ -60,6 +62,7 @@ export class GameScene extends Phaser.Scene {
         this.attacksub = new AttacksSubsystem(this);
         this.playersub = new PlayerSubsystem(this);
         this.playerAttackSub =  new PlayerAttackSubsystem(this);
+        this.effectsub = new EffectSubsystem(this);
 
 
         this.StartLevel();
@@ -87,6 +90,10 @@ export class GameScene extends Phaser.Scene {
 
 
         this.bgsub.Dispose();
+        this.effectsub.Destroy();
+        this.attacksub.Destroy();
+        this.playersub.Destroy();
+        this.playerAttackSub.Destroy();
     }
 
     PointerLock() {

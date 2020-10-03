@@ -21,6 +21,10 @@ export class PlayerAttackSubsystem {
         this.attacks = [];
    }
 
+   Destroy() {
+       this.attacks = null;
+   }
+
     GetBullet():PlayerAttack {
         let b:PlayerAttack;
         for(let i = 0; i < this.attacks.length; i++) {
@@ -66,7 +70,7 @@ export class PlayerAttackSubsystem {
         }
         // this.gs.events.emit('debug', `Fire delay: ${this.CurrentFireDelay}\nFireReady: ${this.FireReady}`, false);
 
-        if(this.Firing && this.FireReady) {
+        if(this.Firing && this.FireReady && !this.gs.shield.active) {
             let bd = new PlayerBulletDef();
             bd.x = this.gs.p.x;
             bd.y = this.gs.p.y;

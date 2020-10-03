@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { isThisTypeNode } from 'typescript';
 import { C } from '../C';
 import { Bot } from './Bot';
 
@@ -18,7 +19,7 @@ export class BotPiece {
 
     constructor(parent:Bot) {
         this.parentBot = parent;
-        this.s = this.parentBot.gs.add.sprite(0,0, 'atlas');
+        this.s = this.parentBot.gs.add.sprite(0,0, 'atlas').setOrigin(0,0);
         this.parentBot.AddPiece(this);
     }
 
@@ -31,5 +32,17 @@ export class BotPiece {
 
         this.s.setDepth(C.BOT_DEPTH + this.baseDepth);
     }
+
+    /**Checks if this piece was hit by an attack. 
+     * Returns true if it was.
+     */
+    CheckHit(x:number, y:number):boolean {
+        let hit = this.parentBot.gs.textures.getPixelAlpha(x,y,'atlas', this.s.frame.name) > 0;
+        if(hit) {
+            console.log(`Bullet hit ${this.partName}`);
+        }
+        return hit;
+    }
+        
 
 }

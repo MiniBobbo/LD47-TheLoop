@@ -40,4 +40,8 @@ export class AttacksSubsystem {
         });
     }
 
+    Destroy() {
+        this.bullets = [];
+    }
+
 }
