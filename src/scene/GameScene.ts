@@ -1,10 +1,7 @@
-import { SATFactory } from 'matter';
 import Phaser from 'phaser'
-import { isThisTypeNode, isThrowStatement } from 'typescript';
 import { Bot } from '../bots/Bot';
 import { BulletDef } from '../def/BulletDef';
 import { EffectDef } from '../def/EffectDef';
-import { PlayerBulletDef } from '../def/PlayerBulletDef';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
 import { BotFactory } from '../factory/BotFactory';
@@ -52,6 +49,7 @@ export class GameScene extends Phaser.Scene {
         this.events.on('shake_small', this.SmallShake, this);
         this.events.on('playerwin', this.PlayerWin, this);
         this.events.on('playerlose', this.PlayerLose, this);
+        this.events.on('endscene', this.EndScene, this);
         this.events.on('effect', this.Effect, this);
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
@@ -115,6 +113,7 @@ export class GameScene extends Phaser.Scene {
         this.events.removeListener('bullet_blocked', this.BulletBlocked, this);
         this.events.removeListener('charge_level', this.SetChargeLevel, this);
         this.events.removeListener('effect', this.Effect, this);
+        this.events.removeListener('endscene', this.EndScene, this);
 
         this.input.removeListener('pointerdown', this.Clicked, this);
         this.events.removeListener('shake', this.Shake, this);
@@ -123,7 +122,6 @@ export class GameScene extends Phaser.Scene {
         this.input.keyboard.removeListener('keyup-SPACE', () => {this.shield.emit('shieldoff');});
         this.events.removeListener('playerwin', this.PlayerWin, this);
         this.events.removeListener('playerlose', this.PlayerLose, this);
-
 
         this.bgsub.Dispose();
         this.effectsub.Destroy();
@@ -249,17 +247,31 @@ export class GameScene extends Phaser.Scene {
                 this.events.emit('effect', ed);
             }
         });
-
-        this.cameras.main.fade(5000, 255,255,255, true, (cam:any, progress:number) => {
-            if(progress==1) this.scene.start('menu');
-        });
     }
 
     PlayerLose() {
+        this.gameStart = false;
+        this.time.addEvent({
+            repeat:40,
+            delay:200,
+            callback:() =>{
+                let ed = new EffectDef();
+                ed.effect = "explode";
+                ed.x = Phaser.Math.Between(this.bot.c.x, this.bot.c.x + 200);
+                ed.y = Phaser.Math.Between(this.bot.c.y, this.bot.c.y + 200);
+                this.events.emit('effect', ed);
+            }
+        });
         
     }
 
     Effect(def:EffectDef) {
         this.effectsub.PlayEffect(def);
+    }
+
+    EndScene() {
+        this.scene.remove('hud');
+        this.scene.remove('game');
+        this.scene.start('menu');
     }
 }

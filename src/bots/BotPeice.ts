@@ -4,6 +4,7 @@ import { C } from '../C';
 import { EffectDef } from '../def/EffectDef';
 import { PlayerBulletDef } from '../def/PlayerBulletDef';
 import { PlayerAttack } from '../entities/PlayerAttack';
+import { S } from '../S';
 import { Bot } from './Bot';
 
 export class BotPiece {
@@ -46,7 +47,7 @@ export class BotPiece {
     Damage(bullet:PlayerAttack) {
         let damage = bullet.GetBulletDamage() - this.armor;
         if(this.invulnerable ||  damage <= 0) {
-            this.parentBot.gs.events.emit('sound', 'invulnerable');
+            this.parentBot.gs.events.emit('sound', S.PING);
             let ed = new EffectDef();
             ed.effect = "blocked";
             ed.x = bullet.s.x;
@@ -60,6 +61,7 @@ export class BotPiece {
             ed.x = bullet.s.x;
             ed.y = bullet.s.y;
             this.parentBot.gs.events.emit('effect', ed);
+            this.parentBot.gs.events.emit('sound', S.HIT);
             if(this.health <=0) {
                 this.health = 0;
                 let ed = new EffectDef();

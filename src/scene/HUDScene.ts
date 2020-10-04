@@ -67,6 +67,10 @@ export class HUDScene extends Phaser.Scene {
         this.gs.events.on('firecharge', this.SetFireCharge, this);
         this.gs.events.on('bot_damage', this.DamageBot, this);
 
+        this.gs.events.on('playerwin', this.PlayerWin, this);
+        this.gs.events.on('playerlose', this.PlayerLose, this);
+
+
         this.time.addEvent({
             delay:15,
             repeat:-1,
@@ -84,6 +88,46 @@ export class HUDScene extends Phaser.Scene {
         this.gs.events.removeListener('bot_damage', this.DamageBot, this);
 
     }
+
+    PlayerWin() {
+        this.cameras.main.fade(5000, 255,255,255, true, (cam:any, progress:number) => {
+            if(progress==1) {
+                this.time.addEvent({
+                    delay:3000,
+                    callback:() => {
+                        this.gs.events.emit('endscene');
+                    }
+                });
+                this.DisplayMessage('youwin');
+            }
+        });
+    }
+
+    PlayerLose() {
+        this.cameras.main.fade(5000, 255,0,0, true, (cam:any, progress:number) => {
+            if(progress==1) {
+                this.time.addEvent({
+                    delay:3000,
+                    callback:() => {
+                        this.gs.events.emit('endscene');
+                    }
+                });
+                this.DisplayMessage('YouLose');
+            }
+        });
+    }
+
+    DisplayMessage(message:string) {
+        let m = this.add.image(240, 135, 'atlas', message);
+        // this.tweens.add({
+        //     targets:m,
+        //     duration:300, 
+        //     x:240,
+
+        // });
+
+    }
+
 
     DamagePlayer(newHP:number, maxHP:number) {
         // this.scene.get('game').events.emit('shake');

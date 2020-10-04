@@ -10,15 +10,16 @@ export class SoundSubsystem {
     }
 
     PlaySound(sound:string) {
-        switch (sound) {
-            case 'explode':
-                this.gs.sound.play('explode', {volume:.5});
+
+        // switch (sound) {
+        //     case 'explode':
+        this.gs.sound.play(sound, {volume:.5});
                 
-                break;
+        //         break;
         
-            default:
-                break;
-        }
+        //     default:
+        //         break;
+        // }
     }
 
     Destroy() {
