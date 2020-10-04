@@ -989,7 +989,7 @@ esutils@^2.0.2:
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-eventemitter3@^4.0.7:
+eventemitter3@^4.0.4:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
@@ -2032,12 +2032,12 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-phaser@^3.50.0-beta.4:
-  version "3.50.0-beta.4"
-  resolved "https://registry.yarnpkg.com/phaser/-/phaser-3.50.0-beta.4.tgz#b5917377d7c0307ce939ba0a5c93cee42e827d38"
-  integrity sha512-nlRGlZUcKtiiBgo1ce0POX4iRyRLMPs8kqfUoF6O9lMgGqw1yLMa3UcWWdJSWfX1MLU1wmiqU3U+kwQ+5HPHww==
+phaser@^3.24.1:
+  version "3.24.1"
+  resolved "https://registry.yarnpkg.com/phaser/-/phaser-3.24.1.tgz#376e0c965d2a35af37c06ee78627dafbde5be017"
+  integrity sha512-WbrRMkbpEzarkfrq83akeauc6b8xNxsOTpDygyW7wrU2G2ne6kOYu3hji4UAaGnZaOLrVuj8ycYPjX9P1LxcDw==
   dependencies:
-    eventemitter3 "^4.0.7"
+    eventemitter3 "^4.0.4"
     exports-loader "^1.1.0"
     imports-loader "^1.1.0"
     path "^0.12.7"

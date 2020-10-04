@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { isThisTypeNode } from 'typescript';
+import { C } from '../C';
 import { EffectDef } from '../def/EffectDef';
 import { GameScene } from '../scene/GameScene';
 
@@ -73,6 +74,10 @@ export class PlayerAttack {
         this.available = true;
         this.s.setVisible(false);
 
+    }
+
+    GetBulletDamage():number {
+        return C.GetBulletLevelDamage(this.level);
     }
 
     private UpdateVisual() {

@@ -6,8 +6,12 @@ export class HUDScene extends Phaser.Scene {
     private hpBar:Phaser.GameObjects.Graphics;
     private chargeBar:Phaser.GameObjects.Graphics;
     private enemyBar:Phaser.GameObjects.Graphics;
-    private hitGraphics:Phaser.GameObjects.Graphics;
 
+    targetHPPercent:number=1;
+    currentHPPercent:number=0;
+
+    enemyTarget:number=1;
+    enemyCurrent:number=0;
     gs:GameScene;
 
     debug:Phaser.GameObjects.Text;
@@ -61,6 +65,14 @@ export class HUDScene extends Phaser.Scene {
         this.events.on('destroy', this.Destroy, this);
         this.gs.events.on('debug', this.AddDebug, this);
         this.gs.events.on('firecharge', this.SetFireCharge, this);
+        this.gs.events.on('bot_damage', this.DamageBot, this);
+
+        this.time.addEvent({
+            delay:15,
+            repeat:-1,
+            callback:() => {this.Update(0);},
+            callbackScope:this
+        });
 
     }
 
@@ -69,12 +81,17 @@ export class HUDScene extends Phaser.Scene {
         this.events.removeListener('destroy', this.Destroy, this);
         this.gs.events.removeListener('debug', this.AddDebug, this);
         this.gs.events.removeListener('firecharge', this.SetFireCharge, this);
+        this.gs.events.removeListener('bot_damage', this.DamageBot, this);
 
     }
 
-    DamagePlayer(newHP:number) {
+    DamagePlayer(newHP:number, maxHP:number) {
         // this.scene.get('game').events.emit('shake');
-        this.hpBar.scaleX = 575 * (newHP/100);
+        this.targetHPPercent = (newHP/maxHP);
+    }
+    DamageBot(newHP:number, maxHP:number) {
+        // this.scene.get('game').events.emit('shake');
+        this.enemyTarget = newHP/maxHP;
     }
 
     AddDebug(message:string, append:boolean = false) {
@@ -86,9 +103,36 @@ export class HUDScene extends Phaser.Scene {
     }
 
     SetFireCharge(charge:number) {
-        // if(charge < 1000)
             
-        this.chargeBar.scaleX = 280 * (charge / 2500);
+        this.chargeBar.scaleX = this.CHARGEBAR_WIDTH * (charge / 2500);
+    }
+
+    Update(dt:number) {
+        if(Math.abs(this.currentHPPercent - this.targetHPPercent) < .02) {
+            this.currentHPPercent = this.targetHPPercent;
+            this.hpBar.scaleX = this.HEALTHBAR_WIDTH * this.currentHPPercent;
+        } else if(this.currentHPPercent < this.targetHPPercent) {
+            this.currentHPPercent += .01;
+            this.hpBar.scaleX = this.HEALTHBAR_WIDTH * this.currentHPPercent;
+        } else if(this.currentHPPercent > this.targetHPPercent) {
+            this.currentHPPercent-= .01;
+            this.hpBar.scaleX = this.HEALTHBAR_WIDTH * this.currentHPPercent;
+        }
+
+        if(Math.abs(this.enemyCurrent - this.enemyTarget) < .02) {
+            this.enemyCurrent = this.enemyTarget;
+            this.enemyBar.scaleX = this.ENEMYBAR_WIDTH * this.enemyCurrent; 
+        } else if(this.enemyCurrent < this.enemyTarget) {
+            this.enemyCurrent+= .01;
+            this.enemyBar.scaleX = this.ENEMYBAR_WIDTH * this.enemyCurrent;
+        } else if(this.enemyCurrent > this.enemyTarget) {
+            this.enemyCurrent-= .01;
+            this.enemyBar.scaleX = this.ENEMYBAR_WIDTH * this.enemyCurrent;
+        }
+
+
+            
+
     }
 
 } 

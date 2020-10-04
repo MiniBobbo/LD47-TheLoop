@@ -177,4 +177,24 @@ export class GameScene extends Phaser.Scene {
     SetChargeLevel(level:number) {
 
     }
+
+    Flash(s:Phaser.GameObjects.Sprite) {
+        this.time.addEvent({
+            repeat:13,
+            delay:30,
+            callback:()=>{s.visible = !s.visible;},
+        });
+    }
+
+    FlashFast(s:Phaser.GameObjects.Sprite) {
+        s.setVisible(false);
+        this.time.addEvent({
+            repeat:6,
+            delay:30,
+            callback:()=>{s.visible = !s.visible;},
+            callbackScope:this
+        });
+    }
+
+
 }

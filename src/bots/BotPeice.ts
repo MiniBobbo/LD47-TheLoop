@@ -32,29 +32,45 @@ export class BotPiece {
     PlayAnimation(baseName:string, animationName:string ) {
         this.currentAnim = animationName;
         this.currentBase = baseName;
-        let frameName = `${baseName}_${animationName}_${this.partName}`;
-        if(this.destroyed)
-            frameName += '_destroyed';
 
+        let frameName = '';
+        if(this.destroyed)
+            frameName = `${baseName}_${animationName}_destroyed_${this.partName}`;
+        else
+            frameName = `${baseName}_${animationName}_${this.partName}`;
         this.s.setFrame(frameName);
 
         this.s.setDepth(C.BOT_DEPTH + this.baseDepth);
     }
 
-    Damage(damage:number) {
-        if(this.destructable) {
-            this.health -= damage - this.armor;
+    Damage(bullet:PlayerAttack) {
+        let damage = bullet.GetBulletDamage() - this.armor;
+        if(this.invulnerable ||  damage <= 0) {
+            this.parentBot.gs.events.emit('sound', 'invulnerable');
+            let ed = new EffectDef();
+            ed.effect = "invulnerable";
+            ed.x = bullet.s.x;
+            ed.y = bullet.s.y;
+            this.parentBot.gs.events.emit('effect', ed);
+        } else if(this.destructable) {
+            this.health -= damage;
+            this.parentBot.gs.FlashFast(this.s);
             if(this.health <=0) {
                 this.health = 0;
-            }
+                this.Destroyed();
+                this.parentBot.Damage(this.passalongDamage);
+            } 
+        }  else {
+            this.parentBot.Damage(damage);
         }
     }
 
     Destroyed() {
-        this.PlayAnimation(this.currentAnim, this.currentBase);
+        this.destroyed = true;
+        this.PlayAnimation(this.currentBase, this.currentAnim);
         let ed = new EffectDef();
         ed.effect = 'destroy';
-        this.parentBot.gs.events.emit('effect', );
+        this.parentBot.gs.events.emit('effect', ed);
     }
 
     /**Checks if this piece was hit by an attack. 
@@ -65,16 +81,7 @@ export class BotPiece {
             return false;
         let hit = this.parentBot.gs.textures.getPixelAlpha(x,y,'atlas', this.s.frame.name) > 0;
         if(hit) {
-            if(this.invulnerable) {
-                this.parentBot.gs.events.emit('sound', 'invulnerable');
-                let ed = new EffectDef();
-                ed.effect = "invulnerable";
-                ed.x = bullet.s.x;
-                ed.y = bullet.s.y;
-                this.parentBot.gs.events.emit('effect', ed);
-            } else {
-                this.Damage(bullet.level);
-            }
+            this.Damage(bullet);
         }
         return hit;
     }

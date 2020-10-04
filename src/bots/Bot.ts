@@ -12,7 +12,7 @@ export class Bot {
     baseName:string;
     maxHealth:number = 150;
     currentHealth:number = 150;
-    private basePiece:BotPiece;
+    basePiece:BotPiece;
     private pieces:Array<BotPiece>;
     fsm:FSM;
     constructor(gs:GameScene) {
@@ -72,7 +72,9 @@ export class Bot {
 
     Damage(damage:number) {
         this.currentHealth -= damage;
-        // if()
+        this.gs.events.emit('bot_damage', this.currentHealth, this.maxHealth);
+        this.gs.Flash(this.basePiece.s);
+
     }
 
 
