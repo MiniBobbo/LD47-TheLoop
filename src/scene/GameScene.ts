@@ -44,6 +44,8 @@ export class GameScene extends Phaser.Scene {
         this.input.on('pointerup', this.ClickedOff, this);
         this.events.on('shake', this.Shake, this);
         this.events.on('shake_small', this.SmallShake, this);
+        this.events.on('playerwin', this.PlayerWin, this);
+        this.events.on('playerlose', this.PlayerLose, this);
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
@@ -87,6 +89,8 @@ export class GameScene extends Phaser.Scene {
         this.events.removeListener('shake_small', this.SmallShake, this);
         this.input.keyboard.removeListener('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.removeListener('keyup-SPACE', () => {this.shield.emit('shieldoff');});
+        this.events.removeListener('playerwin', this.PlayerWin, this);
+        this.events.removeListener('playerlose', this.PlayerLose, this);
 
 
         this.bgsub.Dispose();
@@ -118,9 +122,9 @@ export class GameScene extends Phaser.Scene {
                 //@ts-ignore
                 this.p.y += pointer.movementY;
                 //@ts-ignore
-                this.p.x = Phaser.Math.Clamp(this.p.x, 0, 960);
+                this.p.x = Phaser.Math.Clamp(this.p.x, 0, 480);
                 //@ts-ignore
-                this.p.y = Phaser.Math.Clamp(this.p.y, 0, 540);
+                this.p.y = Phaser.Math.Clamp(this.p.y, 0, 270);
                 
             }
         }, this);
@@ -194,6 +198,14 @@ export class GameScene extends Phaser.Scene {
             callback:()=>{s.visible = !s.visible;},
             callbackScope:this
         });
+    }
+
+    PlayerWin() {
+
+    }
+
+    PlayerLose() {
+        
     }
 
 

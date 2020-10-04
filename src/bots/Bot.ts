@@ -72,6 +72,11 @@ export class Bot {
 
     Damage(damage:number) {
         this.currentHealth -= damage;
+        if(this.currentHealth < 0) {
+            this.currentHealth = 0;
+            this.gs.events.emit('playerwin');
+        }
+
         this.gs.events.emit('bot_damage', this.currentHealth, this.maxHealth);
         this.gs.Flash(this.basePiece.s);
 

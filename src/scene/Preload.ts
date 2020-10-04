@@ -11,6 +11,6 @@ export class PreloadScene extends Phaser.Scene {
         this.anims.create({ key: 'effect_blocked1', frames: this.anims.generateFrameNames('atlas', { prefix: 'blocked1_', end: 10 }), repeat: 0 });
         this.anims.create({ key: 'effect_blocked2', frames: this.anims.generateFrameNames('atlas', { prefix: 'blocked2_', end: 12 }), repeat: 0 });
     
-        this.scene.start('game');
+        this.scene.start('menu');
     }
 }
