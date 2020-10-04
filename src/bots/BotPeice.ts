@@ -1,6 +1,9 @@
 import Phaser from 'phaser'
 import { isThisTypeNode } from 'typescript';
 import { C } from '../C';
+import { EffectDef } from '../def/EffectDef';
+import { PlayerBulletDef } from '../def/PlayerBulletDef';
+import { PlayerAttack } from '../entities/PlayerAttack';
 import { Bot } from './Bot';
 
 export class BotPiece {
@@ -15,6 +18,9 @@ export class BotPiece {
 
     parentBot:Bot;
 
+    currentAnim:string = "";
+    currentBase:string = "";
+
     s:Phaser.GameObjects.Sprite;
 
     constructor(parent:Bot) {
@@ -24,6 +30,8 @@ export class BotPiece {
     }
 
     PlayAnimation(baseName:string, animationName:string ) {
+        this.currentAnim = animationName;
+        this.currentBase = baseName;
         let frameName = `${baseName}_${animationName}_${this.partName}`;
         if(this.destroyed)
             frameName += '_destroyed';
@@ -33,13 +41,40 @@ export class BotPiece {
         this.s.setDepth(C.BOT_DEPTH + this.baseDepth);
     }
 
+    Damage(damage:number) {
+        if(this.destructable) {
+            this.health -= damage - this.armor;
+            if(this.health <=0) {
+                this.health = 0;
+            }
+        }
+    }
+
+    Destroyed() {
+        this.PlayAnimation(this.currentAnim, this.currentBase);
+        let ed = new EffectDef();
+        ed.effect = 'destroy';
+        this.parentBot.gs.events.emit('effect', );
+    }
+
     /**Checks if this piece was hit by an attack. 
      * Returns true if it was.
      */
-    CheckHit(x:number, y:number):boolean {
+    CheckHit(x:number, y:number, bullet:PlayerAttack):boolean {
+        if(this.destroyed)
+            return false;
         let hit = this.parentBot.gs.textures.getPixelAlpha(x,y,'atlas', this.s.frame.name) > 0;
         if(hit) {
-            console.log(`Bullet hit ${this.partName}`);
+            if(this.invulnerable) {
+                this.parentBot.gs.events.emit('sound', 'invulnerable');
+                let ed = new EffectDef();
+                ed.effect = "invulnerable";
+                ed.x = bullet.s.x;
+                ed.y = bullet.s.y;
+                this.parentBot.gs.events.emit('effect', ed);
+            } else {
+                this.Damage(bullet.level);
+            }
         }
         return hit;
     }

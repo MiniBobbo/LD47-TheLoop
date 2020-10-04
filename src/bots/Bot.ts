@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { textChangeRangeIsUnchanged } from 'typescript';
 import { Bullet } from '../entities/Bullet';
 import { PlayerAttack } from '../entities/PlayerAttack';
+import { FSM } from '../FSM/FSM';
 import { GameScene } from '../scene/GameScene';
 import { BotPiece } from './BotPeice';
 
@@ -9,19 +10,27 @@ export class Bot {
     c:Phaser.GameObjects.Container;
     gs:GameScene;
     baseName:string;
-    hitArea:Phaser.Geom.Rectangle;
+    maxHealth:number = 150;
+    currentHealth:number = 150;
     private basePiece:BotPiece;
     private pieces:Array<BotPiece>;
+    fsm:FSM;
     constructor(gs:GameScene) {
         this.gs = gs;
         this.c = gs.add.container(0,0).setDepth(50);
 
-        this.pieces = [];
+        this.fsm = new FSM(this);
 
-        this.hitArea = new Phaser.Geom.Rectangle(0,0,400,400);
+
+        this.pieces = [];
 
         this.gs.events.on('bot_check_hit', this.CheckHit, this);
     }
+
+    changeFSM(nextFSM:string) {
+
+    }
+
 
     AddPiece(piece:BotPiece) {
         this.pieces.push(piece);
@@ -53,7 +62,7 @@ export class Bot {
         let y = b.s.y - this.c.y;
 
         for(let i = 0; i < this.pieces.length; i++) {
-            if(this.pieces[i].CheckHit(x,y)) {
+            if(this.pieces[i].CheckHit(x,y, b)) {
                 b.EndBullet();
                 break;
 
@@ -61,9 +70,11 @@ export class Bot {
         }
     }
 
-    private IsWithinBounds(x:number, y:number) {
-        return this.hitArea.contains(x,y);
+    Damage(damage:number) {
+        this.currentHealth -= damage;
+        // if()
     }
+
 
     Destroy() {
         this.gs.events.removeListener('bot_check_hit', this.CheckHit, this);

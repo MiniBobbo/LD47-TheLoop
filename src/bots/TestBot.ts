@@ -10,7 +10,7 @@ export class TestBot extends Bot {
         
         this.c.setPosition(300,100);
 
-        this.baseName = 'Testbot';
+        this.baseName = 'sphere';
         
         let body = new BotPiece(this);
         body.partName = 'Body';

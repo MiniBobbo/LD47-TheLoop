@@ -78,10 +78,10 @@ export class PlayerAttack {
     private UpdateVisual() {
         let percentage = this.position / 300;
         this.s.setDepth(this.position + 200);
-        let bonussize = 1;
+        let bonussize = .5;
         if(this.level > 1)
-        bonussize = 3;
-        let displaySize = 10 + (this.radius*3 * bonussize) * percentage;
+        bonussize = 1.5;
+        let displaySize = 10 + (this.radius*2 * bonussize) * percentage;
         this.s.setDisplaySize(displaySize, displaySize);
         this.s.angle -= this.rotationSpeed;
 

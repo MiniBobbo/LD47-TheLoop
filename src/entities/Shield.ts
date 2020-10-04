@@ -4,13 +4,13 @@ import { Bullet } from './Bullet';
 
 export class Shield {
     s:Phaser.GameObjects.Sprite;
-    radius:number = 100;
+    radius:number = 50;
     gs:GameScene;
     active:boolean = false;
     constructor(gs:GameScene) {
         this.gs = gs;
 
-        this.s = gs.add.sprite(0,0,'atlas', 'shield_0').setDepth(550).setAlpha(.5);
+        this.s = gs.add.sprite(0,0,'atlas', 'shield_0').setDepth(550).setAlpha(.5).setDisplaySize(this.radius*2,this.radius*2);
         this.s.setVisible(false);
 
         this.s.on('shieldon', this.ShieldOn, this);

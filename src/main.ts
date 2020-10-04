@@ -14,9 +14,9 @@ class Main extends Phaser.Game {
   constructor() {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,
-      width: 960,
-      height: 540,
-      zoom:1,
+      width: 480,
+      height: 270,
+      zoom:2,
       // scene:{
       //   // preload:preload,
       //   // game:Game
