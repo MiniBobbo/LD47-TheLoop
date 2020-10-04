@@ -4,4 +4,5 @@ export class BulletDef {
     speed:number = 300;
     xMotion:number = 0;
     yMotion:number = 0;
+    strength:number = 5;
 }

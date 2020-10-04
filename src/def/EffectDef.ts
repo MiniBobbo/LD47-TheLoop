@@ -1,5 +1,7 @@
+import { E } from "../E";
+
 export class EffectDef {
-    effect:string;
+    effect:E;
     x:number;
     y:number;
     depth:number;

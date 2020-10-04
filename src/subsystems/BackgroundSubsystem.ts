@@ -6,10 +6,11 @@ export class BackgroundSubsystem {
     wall:Phaser.GameObjects.TileSprite;
     bg1:Phaser.GameObjects.TileSprite;
     sky:Phaser.GameObjects.TileSprite;
-    movement:number = 25;
+    movement:number = 0;
     constructor(gs:GameScene){
         this.gs = gs;
 
+        this.gs.events.on('changemovement', this.ChangeMovement, this);
 
     }
 
@@ -20,9 +21,20 @@ export class BackgroundSubsystem {
 
     }
 
+    ChangeMovement(newMovement:number, transitionTime:number = 500) {
+        this.gs.tweens.add({
+            duration:transitionTime,
+            targets:this,
+            movement:newMovement,
+            ease:Phaser.Math.Easing.Sine.InOut
+
+        });
+    }
+
     Dispose() {
         this.wall.destroy();
         this.bg1.destroy();
+        this.gs.events.removeListener('changemovement', this.ChangeMovement, this);
     }
 
     update(dt:number) {

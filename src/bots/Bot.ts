@@ -23,7 +23,6 @@ export class Bot {
         // this.c = gs.add.container(0,0).setDepth(50);
 
         this.fsm = new FSM(this);
-        this.fsm.addModule('wait', new SphereWait(this));
 
 
         this.pieces = [];
@@ -97,6 +96,7 @@ export class Bot {
 
 
     Update(time:number, dt:number) {
+        this.fsm.update(time, dt);
         this.pieces.forEach(element => {
             element.UpdatePosition(time, dt);
         });        

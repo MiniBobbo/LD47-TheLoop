@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { Bot } from '../bots/Bot';
 import { BulletDef } from '../def/BulletDef';
 import { EffectDef } from '../def/EffectDef';
+import { E } from '../E';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
 import { BotFactory } from '../factory/BotFactory';
@@ -51,6 +52,7 @@ export class GameScene extends Phaser.Scene {
         this.events.on('playerlose', this.PlayerLose, this);
         this.events.on('endscene', this.EndScene, this);
         this.events.on('effect', this.Effect, this);
+
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
@@ -186,7 +188,7 @@ export class GameScene extends Phaser.Scene {
         if(this.shield.active && Phaser.Math.Distance.BetweenPoints(this.p, b.s) < b.radius + this.shield.radius) {
             this.events.emit('bullet_blocked', b);
         } else {
-            this.playersub.DamagePlayer(5);
+            this.playersub.DamagePlayer(b.strength);
         }
     }
 
@@ -243,7 +245,7 @@ export class GameScene extends Phaser.Scene {
             delay:200,
             callback:() =>{
                 let ed = new EffectDef();
-                ed.effect = "explode";
+                ed.effect = E.EXPLODE;
                 ed.x = Phaser.Math.Between(this.bot.position.x, this.bot.position.x + 200);
                 ed.y = Phaser.Math.Between(this.bot.position.y, this.bot.position.y + 200);
                 this.events.emit('effect', ed);
@@ -269,9 +271,9 @@ export class GameScene extends Phaser.Scene {
             delay:200,
             callback:() =>{
                 let ed = new EffectDef();
-                ed.effect = "explode";
-                ed.x = Phaser.Math.Between(this.bot.c.x, this.bot.c.x + 200);
-                ed.y = Phaser.Math.Between(this.bot.c.y, this.bot.c.y + 200);
+                ed.effect = E.EXPLODE;
+                ed.x = Phaser.Math.Between(0, 480);
+                ed.y = Phaser.Math.Between(0,270);
                 this.events.emit('effect', ed);
             }
         });

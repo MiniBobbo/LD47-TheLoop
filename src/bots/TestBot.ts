@@ -1,39 +1,40 @@
 import Phaser from 'phaser'
 import { textChangeRangeIsUnchanged } from 'typescript';
+import { SphereFire } from '../FSM/spherefsm/SphereFire';
+import { SphereWait } from '../FSM/spherefsm/SphereWait';
 import { GameScene } from '../scene/GameScene';
 import { Bot } from './Bot';
 import { BotPiece } from './BotPeice';
+import { SphereGun } from './spherebot/SphereGun';
 
 export class TestBot extends Bot {
     sway:number = 0;
+    spheres:Array<BotPiece>;
     constructor(gs:GameScene) {
         super(gs);
         
         this.baseName = 'sphere';
 
-
-        this.maxHealth = 5;
-        this.currentHealth = 5;
+        this.spheres = [];
+        this.maxHealth = 120;
+        this.currentHealth = 120;
         let body = new BotPiece(this);
         body.partName = 'Body';
         body.health = 150;
-        body.armor = 5;
+        body.armor = 10;
         this.SetMainPiece(body);
 
         for(let i = 1; i < 5; i++) {
-            let s = new BotPiece(this);
-            s.partName = `s${i}`;
-            s.health = 40;
-            s.armor = 0;
-            s.destructable = true;
-            s.invulnerable = false;
-            s.passalongDamage = 30;
+            let s = new SphereGun(this, i);
+            this.spheres.push(s);
         }
         this.PlayAnimation('stand');
 
-        this.position.set(100,50);
+        this.position.set(75,25);
         this.Update(0,0);
-        
+
+        this.fsm.addModule('wait', new SphereWait(this));
+        this.fsm.addModule('fire', new SphereFire(this));
     }
 
     Update(time:number, dt:number) {
@@ -55,7 +56,13 @@ export class TestBot extends Bot {
             ease: Phaser.Math.Easing.Sine.InOut
 
         }); 
+        this.fsm.changeModule('wait');
 
+    }
+
+    Destroy(){
+        this.spheres = [];
+        super.Destroy();
     }
 
 }

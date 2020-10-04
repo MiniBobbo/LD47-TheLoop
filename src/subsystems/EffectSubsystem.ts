@@ -1,5 +1,7 @@
 import Phaser from 'phaser'
 import { EffectDef } from '../def/EffectDef';
+import { E } from '../E';
+import { S } from '../S';
 import { GameScene } from '../scene/GameScene'
 
 export class EffectSubsystem {
@@ -26,17 +28,23 @@ export class EffectSubsystem {
             callback:() => {e.setActive(false).setVisible(false);}
         });
         switch (def.effect) {
-            case 'explode':
+            case E.EXPLODE:
                 e.setScale(2);
-                e.play('explode');
-                this.gs.events.emit('sound', 'explode');
+                e.play(E.EXPLODE);
+                this.gs.events.emit('sound', S.EXPLODE);
                 break;
-            case 'hit':
+            case E.HIT:
                 e.setScale(2);
                 e.play('effect_hit1');
+                this.gs.events.emit('sound', S.HIT);
+                break;
+            case E.SHIELDED:
+                e.setScale(2);
+                e.play(E.SHIELDED);
+                this.gs.events.emit('sound', S.PING);
                 break;
             default:
-                e.play('effect_blocked1');
+                e.play(E.SHIELDED);
                 break;
         }
     }

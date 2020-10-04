@@ -12,18 +12,20 @@ export class Bullet {
     yMotion:number = 0;
     blockable:boolean = true;
     rotationSpeed:number = 10;
+    strength:number = 5;
     constructor(gs:GameScene) {
         this.gs = gs;
         this.s = this.gs.add.sprite(0,0, 'atlas', 'attack_0');
     }
 
-    Fire(x:number, y:number, speed:number, motionX:number = 0, motionY:number) {
+    Fire(x:number, y:number, speed:number, motionX:number = 0, motionY:number, strength:number = 5) {
         this.position = 0;
         this.s.setDisplaySize(10,10);
         this.s.visible = true;
         this.available = false;
         this.xMotion = motionX;
         this.yMotion = motionY;
+        this.strength = strength;
 
         this.s.setPosition(x,y);
 

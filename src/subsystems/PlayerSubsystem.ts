@@ -16,6 +16,10 @@ export class PlayerSubsystem {
     DamagePlayer(damage:number) {
         this.hp -= damage;
         this.gs.events.emit('shake');
+        if(this.hp <= 0) {
+            this.hp = 0;
+            this.gs.events.emit('playerlose');
+        }
         this.hud.events.emit('player_damage', this.hp, this.maxHP);
         
     }

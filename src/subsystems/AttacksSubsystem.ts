@@ -30,8 +30,9 @@ export class AttacksSubsystem {
     }
 
     FireBullet(bd:BulletDef) {
+        
         let b = this.GetBullet();
-        b.Fire(bd.x, bd.y, bd.speed, bd.xMotion, bd.yMotion);
+        b.Fire(bd.x, bd.y, bd.speed, bd.xMotion, bd.yMotion, bd.strength);
     }
 
     Update(dt:number) {

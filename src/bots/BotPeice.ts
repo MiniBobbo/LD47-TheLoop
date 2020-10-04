@@ -3,6 +3,7 @@ import { isThisTypeNode } from 'typescript';
 import { C } from '../C';
 import { EffectDef } from '../def/EffectDef';
 import { PlayerBulletDef } from '../def/PlayerBulletDef';
+import { E } from '../E';
 import { PlayerAttack } from '../entities/PlayerAttack';
 import { S } from '../S';
 import { Bot } from './Bot';
@@ -17,6 +18,7 @@ export class BotPiece {
     armor:number = 0;
     partName:string;
     offset:Phaser.Math.Vector2;
+    fireoffset:Phaser.Math.Vector2;
 
     parentBot:Bot;
 
@@ -30,6 +32,7 @@ export class BotPiece {
         this.s = this.parentBot.gs.add.sprite(0,0, 'atlas').setOrigin(0,0);
         this.parentBot.AddPiece(this);
         this.offset = new Phaser.Math.Vector2();
+        this.fireoffset = new Phaser.Math.Vector2();
     }
 
     PlayAnimation(baseName:string, animationName:string ) {
@@ -51,7 +54,7 @@ export class BotPiece {
         if(this.invulnerable ||  damage <= 0) {
             this.parentBot.gs.events.emit('sound', S.PING);
             let ed = new EffectDef();
-            ed.effect = "blocked";
+            ed.effect = E.SHIELDED;
             ed.x = bullet.s.x;
             ed.y = bullet.s.y;
             this.parentBot.gs.events.emit('effect', ed);
@@ -59,15 +62,14 @@ export class BotPiece {
             this.health -= damage;
             this.parentBot.gs.FlashFast(this.s);
             let ed = new EffectDef();
-            ed.effect = "hit";
+            ed.effect = E.HIT;
             ed.x = bullet.s.x;
             ed.y = bullet.s.y;
             this.parentBot.gs.events.emit('effect', ed);
-            this.parentBot.gs.events.emit('sound', S.HIT);
             if(this.health <=0) {
                 this.health = 0;
                 let ed = new EffectDef();
-                ed.effect = "explode";
+                ed.effect = E.SHIELDED;
                 ed.x = bullet.s.x;
                 ed.y = bullet.s.y;
                 this.parentBot.gs.events.emit('effect', ed);
