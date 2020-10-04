@@ -5,7 +5,9 @@ import { EffectDef } from '../def/EffectDef';
 import { E } from '../E';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
+import { M } from '../enums/M';
 import { BotFactory } from '../factory/BotFactory';
+import { S } from '../S';
 import { AttacksSubsystem } from '../subsystems/AttacksSubsystem';
 import { BackgroundSubsystem } from '../subsystems/BackgroundSubsystem';
 import { EffectSubsystem } from '../subsystems/EffectSubsystem';
@@ -31,6 +33,7 @@ export class GameScene extends Phaser.Scene {
 
     //Scenes
     hudScene:HUDScene;
+    musicScene:Phaser.Scene;
 
     create() {
         
@@ -63,6 +66,7 @@ export class GameScene extends Phaser.Scene {
         this.scene.add('hud', HUDScene, false);
         this.scene.launch('hud');
         this.hudScene = this.scene.get('hud') as HUDScene;
+        this.musicScene = this.scene.get('music');
         
         //Subsystems
         this.bgsub = new BackgroundSubsystem(this);
@@ -76,11 +80,16 @@ export class GameScene extends Phaser.Scene {
 
 
         this.StartLevel();
+
+        this.musicScene = this.scene.get('music');
+        this.musicScene.events.emit('music_on', M.BATTLE);
+
     }
 
 
 
     StartLevel() {
+        
         this.shield = new Shield(this);
         let r = this.add.image(240, 135, 'atlas', 'ready').setDepth(2000);
         let start = this.add.image(240, 135, 'atlas', 'start').setDepth(2000).setAlpha(0);
@@ -193,7 +202,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     BulletBlocked(b:Bullet) {
-
+        let ed:EffectDef = new EffectDef();
+        ed.effect = E.SHIELDED;
+        ed.x = b.s.x;
+        ed.y = b.s.y;
+        this.events.emit('effect', ed);
+        this.events.emit('sound', S.SHIELDED);
+        this.shield.s.play('shield_block', true);
     }
 
     Clicked() {

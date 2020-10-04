@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
-import { GameScene } from "./scene/GameScene";
 import { MenuScene } from "./scene/MenuScene";
+import { MusicScene } from "./scene/MusicScene";
 import { PreloadScene } from "./scene/Preload";
 // import { Preload } from "./scenes/Preload";
 // import { GameScene } from "./scenes/GameScene";
@@ -31,8 +31,10 @@ class Main extends Phaser.Game {
     // this.scene.add("boot", Boot, false);
     this.scene.add("preload", PreloadScene, false);
     this.scene.add("menu", MenuScene, false);
+    this.scene.add("music", MusicScene, false);
     // this.scene.add("game", GameScene, false);
     this.scene.start("preload");
+    
     // C.gd = new GameData();
     // C.setFlag('5', true);
     }

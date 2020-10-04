@@ -23,7 +23,7 @@ export class FSM {
     }
 
     changeModule(newModule:string, args?:any) {
-        console.log(`Change to ${newModule}`);
+        // console.log(`Change to ${newModule}`);
         if(newModule!=this.currentModuleName && this.modules.has(newModule)) {
             // console.log(`Changed to ${newModule}`);
             this.currentModuleName = newModule;

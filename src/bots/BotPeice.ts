@@ -20,6 +20,8 @@ export class BotPiece {
     offset:Phaser.Math.Vector2;
     fireoffset:Phaser.Math.Vector2;
 
+    flashing:boolean = false;
+
     parentBot:Bot;
 
     currentAnim:string = "";
@@ -54,7 +56,7 @@ export class BotPiece {
         if(this.invulnerable ||  damage <= 0) {
             this.parentBot.gs.events.emit('sound', S.PING);
             let ed = new EffectDef();
-            ed.effect = E.SHIELDED;
+            ed.effect = E.BLOCKED;
             ed.x = bullet.s.x;
             ed.y = bullet.s.y;
             this.parentBot.gs.events.emit('effect', ed);

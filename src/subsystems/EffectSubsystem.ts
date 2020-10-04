@@ -41,10 +41,25 @@ export class EffectSubsystem {
             case E.SHIELDED:
                 e.setScale(2);
                 e.play(E.SHIELDED);
+                this.gs.events.emit('sound', S.SHIELDED);
+                break;
+            case E.BLOCKED:
+                e.setScale(1);
+                e.play(E.BLOCKED);
                 this.gs.events.emit('sound', S.PING);
                 break;
+            case E.PREPFIRE:
+                e.setScale(1);
+                e.play(E.PREPFIRE);
+                this.gs.events.emit('sound', S.PING);
+                break;
+            case E.MISSED:
+                e.setScale(1);
+                e.play(E.MISSED);
+                // this.gs.events.emit('sound', S.PING);
+                break;
             default:
-                e.play(E.SHIELDED);
+                e.play(E.BLOCKED);
                 break;
         }
     }

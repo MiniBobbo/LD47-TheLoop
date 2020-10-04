@@ -1,3 +1,4 @@
+import { M } from "../enums/M";
 import { GameScene } from "./GameScene";
 
 export class MenuScene extends Phaser.Scene {
@@ -11,6 +12,8 @@ export class MenuScene extends Phaser.Scene {
     nextOpponent:string = 'sphere';
 
     movement:number = 10;
+
+    musicScene:Phaser.Scene;
     create() {
 
         this.CreateBackground();
@@ -23,15 +26,16 @@ export class MenuScene extends Phaser.Scene {
         this.selectables = [];
 
         let sphere = this.add.image(240, 200,'atlas', 'sphere_stand_All').setDepth(10).setScale(.5).setData('name', 'sphere');
-        let sphere2 = this.add.image(120, 200,'atlas', 'sphere_stand_All').setDepth(10).setScale(.5).setData('name', 'sphere2');
-        let sphere3 = this.add.image(360, 200,'atlas', 'sphere_stand_All').setDepth(10).setScale(.5).setData('name', 'sphere3');
+        // let sphere2 = this.add.image(120, 200,'atlas', 'sphere_stand_All').setDepth(10).setScale(.5).setData('name', 'sphere2');
+        // let sphere3 = this.add.image(360, 200,'atlas', 'sphere_stand_All').setDepth(10).setScale(.5).setData('name', 'sphere3');
 
         this.selectables = [];
         this.selectables.push(sphere);
-        this.selectables.push(sphere2);
-        this.selectables.push(sphere3);
+        // this.selectables.push(sphere2);
+        // this.selectables.push(sphere3);
 
-        
+        this.musicScene = this.scene.get('music');
+        this.musicScene.events.emit('music_on', M.MAIN_MENU);
     }
 
     Destroy() {
@@ -40,6 +44,7 @@ export class MenuScene extends Phaser.Scene {
             element.destroy();
         });
         this.selectables = null;
+        this.musicScene = null;
     }
 
     CreateBackground() {
@@ -96,7 +101,6 @@ export class MenuScene extends Phaser.Scene {
     Clicked() {
         this.selectables.forEach(element => {
             if(Phaser.Math.Distance.BetweenPoints(this.p, element) < 60) {
-                console.log(`Clicked ${element.getData('name')}`);
                 this.nextOpponent = element.getData('name');
                 this.LaunchGame();
             }
@@ -104,6 +108,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     LaunchGame() {
+        this.events.emit('music_off');
         this.scene.add("game", GameScene, false);
         this.scene.start('game');
     }

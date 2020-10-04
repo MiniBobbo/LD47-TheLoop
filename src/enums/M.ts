@@ -1,4 +1,4 @@
 export enum M {
-    MAIN_MENU       = 'main',
+    MAIN_MENU       = 'wind3',
     BATTLE          = 'battle'
 }

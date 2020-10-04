@@ -8,7 +8,7 @@ export class SphereFire extends FSMModule {
     bot:TestBot;
 
     delayTime:number = 500;
-    DEFAULT_DELAY_TIME:number = 500;
+    DEFAULT_DELAY_TIME:number = 700;
 
     fireCount:number =0;
 
@@ -21,6 +21,7 @@ export class SphereFire extends FSMModule {
         this.delayTime = this.DEFAULT_DELAY_TIME;
         this.bot.gs.events.emit('changemovement', 0);
         this.fireCount = Phaser.Math.Between(3,6);
+        this.bot.PlayAnimation('stand');
     }    
 
     update(dt:number) {
@@ -32,7 +33,7 @@ export class SphereFire extends FSMModule {
                 let bd = new BulletDef();
                 bd.x = s.s.x + s.fireoffset.x - s.offset.x + this.bot.sway;
                 bd.y = s.s.y + s.fireoffset.y - s.offset.y + this.bot.sway;
-                bd.strength = 20;
+                bd.strength = 5;
                 this.bot.gs.events.emit('firebullet', bd);
                 this.fireCount--;
             }

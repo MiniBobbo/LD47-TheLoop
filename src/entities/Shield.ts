@@ -10,7 +10,7 @@ export class Shield {
     constructor(gs:GameScene) {
         this.gs = gs;
 
-        this.s = gs.add.sprite(0,0,'atlas', 'shield_0').setDepth(550).setAlpha(.5).setDisplaySize(this.radius*2,this.radius*2);
+        this.s = gs.add.sprite(0,0,'atlas', 'shield_0').setDepth(550).setAlpha(.5);
         this.s.setVisible(false);
 
         this.s.on('shieldon', this.ShieldOn, this);
@@ -24,6 +24,8 @@ export class Shield {
     }
 
     ShieldOn() {
+        if(!this.active)
+            this.s.play('shield_appear', true);
         this.s.visible = true;
         this.active= true;
     }

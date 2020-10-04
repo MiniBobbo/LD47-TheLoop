@@ -51,6 +51,6 @@ export class Bullet {
         this.s.setDepth(this.position + 200);
         let displaySize = 10 + (this.radius*2) * percentage;
         this.s.setDisplaySize(displaySize, displaySize);
-        this.s.angle += this.rotationSpeed;
+        this.s.angle -= this.rotationSpeed;
     }
 }
