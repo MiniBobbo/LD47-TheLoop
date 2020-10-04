@@ -11,7 +11,9 @@ export class TestBot extends Bot {
         this.c.setPosition(100,0);
 
         this.baseName = 'sphere';
-        
+
+        this.maxHealth = 5;
+        this.currentHealth = 5;
         let body = new BotPiece(this);
         body.partName = 'Body';
         body.health = 150;

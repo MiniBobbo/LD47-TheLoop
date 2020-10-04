@@ -48,16 +48,26 @@ export class BotPiece {
         if(this.invulnerable ||  damage <= 0) {
             this.parentBot.gs.events.emit('sound', 'invulnerable');
             let ed = new EffectDef();
-            ed.effect = "invulnerable";
+            ed.effect = "blocked";
             ed.x = bullet.s.x;
             ed.y = bullet.s.y;
             this.parentBot.gs.events.emit('effect', ed);
         } else if(this.destructable) {
             this.health -= damage;
             this.parentBot.gs.FlashFast(this.s);
+            let ed = new EffectDef();
+            ed.effect = "hit";
+            ed.x = bullet.s.x;
+            ed.y = bullet.s.y;
+            this.parentBot.gs.events.emit('effect', ed);
             if(this.health <=0) {
                 this.health = 0;
-                this.Destroyed();
+                let ed = new EffectDef();
+                ed.effect = "explode";
+                ed.x = bullet.s.x;
+                ed.y = bullet.s.y;
+                this.parentBot.gs.events.emit('effect', ed);
+                    this.Destroyed();
                 this.parentBot.Damage(this.passalongDamage);
             } 
         }  else {
@@ -68,9 +78,6 @@ export class BotPiece {
     Destroyed() {
         this.destroyed = true;
         this.PlayAnimation(this.currentBase, this.currentAnim);
-        let ed = new EffectDef();
-        ed.effect = 'destroy';
-        this.parentBot.gs.events.emit('effect', ed);
     }
 
     /**Checks if this piece was hit by an attack. 

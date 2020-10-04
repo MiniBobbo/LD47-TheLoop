@@ -1,7 +1,9 @@
+import { SATFactory } from 'matter';
 import Phaser from 'phaser'
 import { isThisTypeNode, isThrowStatement } from 'typescript';
 import { Bot } from '../bots/Bot';
 import { BulletDef } from '../def/BulletDef';
+import { EffectDef } from '../def/EffectDef';
 import { PlayerBulletDef } from '../def/PlayerBulletDef';
 import { Bullet } from '../entities/Bullet';
 import { Shield } from '../entities/Shield';
@@ -11,6 +13,7 @@ import { BackgroundSubsystem } from '../subsystems/BackgroundSubsystem';
 import { EffectSubsystem } from '../subsystems/EffectSubsystem';
 import { PlayerAttackSubsystem } from '../subsystems/PlayerAttackSubsystem';
 import { PlayerSubsystem } from '../subsystems/PlayerSubsystem';
+import { SoundSubsystem } from '../subsystems/SoundSubsystem';
 import { HUDScene } from './HUDScene';
 
 export class GameScene extends Phaser.Scene {
@@ -18,12 +21,15 @@ export class GameScene extends Phaser.Scene {
     bot:Bot;
     shield:Shield;
 
+    gameStart:boolean = false;
+
     //Subsystems
     bgsub:BackgroundSubsystem;
     attacksub:AttacksSubsystem;
     playersub:PlayerSubsystem;
     playerAttackSub:PlayerAttackSubsystem;
     effectsub:EffectSubsystem;
+    soundsub:SoundSubsystem;
 
     //Scenes
     hudScene:HUDScene;
@@ -46,6 +52,7 @@ export class GameScene extends Phaser.Scene {
         this.events.on('shake_small', this.SmallShake, this);
         this.events.on('playerwin', this.PlayerWin, this);
         this.events.on('playerlose', this.PlayerLose, this);
+        this.events.on('effect', this.Effect, this);
 
         this.input.keyboard.on('keydown-SPACE', () => {this.shield.emit('shieldon');});
         this.input.keyboard.on('keyup-SPACE', () => {this.shield.emit('shieldoff');});
@@ -65,6 +72,7 @@ export class GameScene extends Phaser.Scene {
         this.playersub = new PlayerSubsystem(this);
         this.playerAttackSub =  new PlayerAttackSubsystem(this);
         this.effectsub = new EffectSubsystem(this);
+        this.soundsub = new SoundSubsystem(this);
 
 
         this.StartLevel();
@@ -74,6 +82,29 @@ export class GameScene extends Phaser.Scene {
 
     StartLevel() {
         this.shield = new Shield(this);
+        let r = this.add.image(240, 135, 'atlas', 'ready').setDepth(2000);
+        let start = this.add.image(240, 135, 'atlas', 'start').setDepth(2000).setAlpha(0);
+        
+        this.tweens.add({
+            targets:r,
+            duration:500,
+            alpha:0,
+            delay:1000,
+            onComplete:()=> {start.setAlpha(1);}
+        });
+        this.tweens.add({
+            targets:start,
+            duration:1500,
+            scaleX:3,
+            scaleY:3,
+            alpha:0,
+            delay:1500,
+            onComplete:()=> {this.gameStart = true; }
+        });
+
+
+
+
     }
 
     Dispose() {
@@ -83,6 +114,7 @@ export class GameScene extends Phaser.Scene {
         this.events.removeListener('bullet_hit', this.BulletHit, this);
         this.events.removeListener('bullet_blocked', this.BulletBlocked, this);
         this.events.removeListener('charge_level', this.SetChargeLevel, this);
+        this.events.removeListener('effect', this.Effect, this);
 
         this.input.removeListener('pointerdown', this.Clicked, this);
         this.events.removeListener('shake', this.Shake, this);
@@ -98,6 +130,7 @@ export class GameScene extends Phaser.Scene {
         this.attacksub.Destroy();
         this.playersub.Destroy();
         this.playerAttackSub.Destroy();
+        this.soundsub.Destroy();
     }
 
     PointerLock() {
@@ -133,7 +166,10 @@ export class GameScene extends Phaser.Scene {
 
     update(time:number, dt:number) {
 
+        if(!this.gameStart)
+            return;
         this.shield.s.setPosition(this.p.x, this.p.y);
+
 
         //Update subsystems
         this.bgsub.update(dt);
@@ -201,12 +237,29 @@ export class GameScene extends Phaser.Scene {
     }
 
     PlayerWin() {
+        this.gameStart = false;
+        this.time.addEvent({
+            repeat:40,
+            delay:200,
+            callback:() =>{
+                let ed = new EffectDef();
+                ed.effect = "explode";
+                ed.x = Phaser.Math.Between(this.bot.c.x, this.bot.c.x + 200);
+                ed.y = Phaser.Math.Between(this.bot.c.y, this.bot.c.y + 200);
+                this.events.emit('effect', ed);
+            }
+        });
 
+        this.cameras.main.fade(5000, 255,255,255, true, (cam:any, progress:number) => {
+            if(progress==1) this.scene.start('menu');
+        });
     }
 
     PlayerLose() {
         
     }
 
-
+    Effect(def:EffectDef) {
+        this.effectsub.PlayEffect(def);
+    }
 }

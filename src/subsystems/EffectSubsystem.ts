@@ -13,20 +13,30 @@ export class EffectSubsystem {
     }
 
     PlayEffect(def:EffectDef) {
-        return;
+        // return;
         let e = this.GetEffect();
         e.setActive(true).setVisible(true);
+        e.setPosition(def.x, def.y);
+        e.setAngle(Phaser.Math.Between(-180, 180));
+        e.setDepth(101);
+        e.setScale(1,1);
+        this.gs.time.addEvent({
+            delay:2000,
+            callbackScope:this.gs,
+            callback:() => {e.setActive(false).setVisible(false);}
+        });
         switch (def.effect) {
-       
+            case 'explode':
+                e.setScale(2);
+                e.play('explode');
+                this.gs.events.emit('sound', 'explode');
+                break;
+            case 'hit':
+                e.setScale(2);
+                e.play('effect_hit1');
+                break;
             default:
-                e.setPosition(def.x, def.y);
-                e.setDepth(101);
                 e.play('effect_blocked1');
-                // this.gs.time.addEvent({
-                //     delay:2000,
-                //     callbackScope:this.gs,
-                //     callback:this.HideEffect
-                // });
                 break;
         }
     }
