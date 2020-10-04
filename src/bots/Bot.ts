@@ -3,6 +3,7 @@ import { textChangeRangeIsUnchanged } from 'typescript';
 import { Bullet } from '../entities/Bullet';
 import { PlayerAttack } from '../entities/PlayerAttack';
 import { FSM } from '../FSM/FSM';
+import { SphereWait } from '../FSM/spherefsm/SphereWait';
 import { GameScene } from '../scene/GameScene';
 import { BotPiece } from './BotPeice';
 
@@ -13,28 +14,39 @@ export class Bot {
     maxHealth:number = 150;
     currentHealth:number = 150;
     basePiece:BotPiece;
-    private pieces:Array<BotPiece>;
+    protected pieces:Array<BotPiece>;
     fsm:FSM;
+    position:Phaser.Math.Vector2;
     constructor(gs:GameScene) {
+        this.position = new Phaser.Math.Vector2(0,0);
         this.gs = gs;
-        this.c = gs.add.container(0,0).setDepth(50);
+        // this.c = gs.add.container(0,0).setDepth(50);
 
         this.fsm = new FSM(this);
+        this.fsm.addModule('wait', new SphereWait(this));
 
 
         this.pieces = [];
 
         this.gs.events.on('bot_check_hit', this.CheckHit, this);
+        this.gs.events.on('bot_start', this.BotStart, this);
     }
 
-    changeFSM(nextFSM:string) {
+    Destroy() {
+        this.gs.events.removeListener('bot_check_hit', this.CheckHit, this);
+        this.gs.events.removeListener('bot_start', this.BotStart, this);
 
+    }
+
+
+    changeFSM(nextFSM:string) {
+        this.fsm.changeModule(nextFSM);
     }
 
 
     AddPiece(piece:BotPiece) {
         this.pieces.push(piece);
-        this.c.add(piece.s);
+        // this.c.add(piece.s);
     }
 
     SetMainPiece(piece:BotPiece) {
@@ -58,8 +70,8 @@ export class Bot {
             // return;
         this.pieces.sort((a, b) => b.s.depth - a.s.depth);
         // console.log(`Bullet at ${b.s.x}, ${b.s.y}.\nChecking against texture at ${b.s.x - this.c.x}, ${b.s.y - this.c.y}`);
-        let x = b.s.x - this.c.x;
-        let y = b.s.y - this.c.y;
+        let x = b.s.x - this.position.x;
+        let y = b.s.y - this.position.y;
 
         for(let i = 0; i < this.pieces.length; i++) {
             if(this.pieces[i].CheckHit(x,y, b)) {
@@ -83,8 +95,14 @@ export class Bot {
     }
 
 
-    Destroy() {
-        this.gs.events.removeListener('bot_check_hit', this.CheckHit, this);
+
+    Update(time:number, dt:number) {
+        this.pieces.forEach(element => {
+            element.UpdatePosition(time, dt);
+        });        
+    }
+
+    BotStart() {
 
     }
 }

@@ -97,7 +97,7 @@ export class GameScene extends Phaser.Scene {
             scaleY:3,
             alpha:0,
             delay:1500,
-            onComplete:()=> {this.gameStart = true; }
+            onComplete:()=> {this.gameStart = true; this.events.emit('bot_start');}
         });
 
 
@@ -167,6 +167,7 @@ export class GameScene extends Phaser.Scene {
         if(!this.gameStart)
             return;
         this.shield.s.setPosition(this.p.x, this.p.y);
+        this.bot.Update(time, dt);
 
 
         //Update subsystems
@@ -217,6 +218,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     Flash(s:Phaser.GameObjects.Sprite) {
+        //TODO: Fix the flash so it doesn't occasionally make the piece invisible.
         this.time.addEvent({
             repeat:13,
             delay:30,
@@ -237,7 +239,33 @@ export class GameScene extends Phaser.Scene {
     PlayerWin() {
         this.gameStart = false;
         this.time.addEvent({
-            repeat:40,
+            repeat:30,
+            delay:200,
+            callback:() =>{
+                let ed = new EffectDef();
+                ed.effect = "explode";
+                ed.x = Phaser.Math.Between(this.bot.position.x, this.bot.position.x + 200);
+                ed.y = Phaser.Math.Between(this.bot.position.y, this.bot.position.y + 200);
+                this.events.emit('effect', ed);
+            }
+        });
+        this.cameras.main.fade(5000, 255,255,255, true, (cam:any, progress:number) => {
+            if(progress==1) {
+                this.time.addEvent({
+                    delay:3000,
+                    callback:() => {
+                        this.events.emit('endscene');
+                    }
+                });
+            }
+        });
+
+    }
+
+    PlayerLose() {
+        this.gameStart = false;
+        this.time.addEvent({
+            repeat:30,
             delay:200,
             callback:() =>{
                 let ed = new EffectDef();
@@ -247,19 +275,14 @@ export class GameScene extends Phaser.Scene {
                 this.events.emit('effect', ed);
             }
         });
-    }
-
-    PlayerLose() {
-        this.gameStart = false;
-        this.time.addEvent({
-            repeat:40,
-            delay:200,
-            callback:() =>{
-                let ed = new EffectDef();
-                ed.effect = "explode";
-                ed.x = Phaser.Math.Between(this.bot.c.x, this.bot.c.x + 200);
-                ed.y = Phaser.Math.Between(this.bot.c.y, this.bot.c.y + 200);
-                this.events.emit('effect', ed);
+        this.cameras.main.fade(5000, 255,0,0, true, (cam:any, progress:number) => {
+            if(progress==1) {
+                this.time.addEvent({
+                    delay:3000,
+                    callback:() => {
+                        this.events.emit('endscene');
+                    }
+                });
             }
         });
         

@@ -16,6 +16,7 @@ export class BotPiece {
     baseDepth:number = 0;
     armor:number = 0;
     partName:string;
+    offset:Phaser.Math.Vector2;
 
     parentBot:Bot;
 
@@ -28,6 +29,7 @@ export class BotPiece {
         this.parentBot = parent;
         this.s = this.parentBot.gs.add.sprite(0,0, 'atlas').setOrigin(0,0);
         this.parentBot.AddPiece(this);
+        this.offset = new Phaser.Math.Vector2();
     }
 
     PlayAnimation(baseName:string, animationName:string ) {
@@ -88,11 +90,23 @@ export class BotPiece {
     CheckHit(x:number, y:number, bullet:PlayerAttack):boolean {
         if(this.destroyed)
             return false;
+        x -= this.offset.x;
+        y -= this.offset.y;
         let hit = this.parentBot.gs.textures.getPixelAlpha(x,y,'atlas', this.s.frame.name) > 0;
         if(hit) {
             this.Damage(bullet);
         }
         return hit;
+    }
+
+    UpdatePosition(time:number, dt:number) {
+        this.s.x = this.parentBot.position.x + this.offset.x;
+        this.s.y = this.parentBot.position.y + this.offset.y;
+        this.Update(dt);
+    }
+
+    Update(dt:number) {
+
     }
         
 

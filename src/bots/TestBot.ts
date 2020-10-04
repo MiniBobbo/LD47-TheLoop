@@ -5,12 +5,12 @@ import { Bot } from './Bot';
 import { BotPiece } from './BotPeice';
 
 export class TestBot extends Bot {
+    sway:number = 0;
     constructor(gs:GameScene) {
         super(gs);
         
-        this.c.setPosition(100,0);
-
         this.baseName = 'sphere';
+
 
         this.maxHealth = 5;
         this.currentHealth = 5;
@@ -28,10 +28,34 @@ export class TestBot extends Bot {
             s.destructable = true;
             s.invulnerable = false;
             s.passalongDamage = 30;
-    
         }
         this.PlayAnimation('stand');
+
+        this.position.set(100,50);
+        this.Update(0,0);
+        
     }
 
+    Update(time:number, dt:number) {
+        super.Update(time, dt);
+        this.pieces.forEach(element => {
+            element.offset.y = this.sway;
+        });
+
+    }
+
+    BotStart() {
+        super.BotStart();
+        this.gs.tweens.add({
+            targets:this,
+            sway:20,
+            yoyo:true,
+            repeat:-1,
+            duration:1000,
+            ease: Phaser.Math.Easing.Sine.InOut
+
+        }); 
+
+    }
 
 }

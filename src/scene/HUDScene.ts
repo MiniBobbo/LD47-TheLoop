@@ -90,35 +90,15 @@ export class HUDScene extends Phaser.Scene {
     }
 
     PlayerWin() {
-        this.cameras.main.fade(5000, 255,255,255, true, (cam:any, progress:number) => {
-            if(progress==1) {
-                this.time.addEvent({
-                    delay:3000,
-                    callback:() => {
-                        this.gs.events.emit('endscene');
-                    }
-                });
-                this.DisplayMessage('youwin');
-            }
-        });
+        this.DisplayMessage('youwin');
     }
 
     PlayerLose() {
-        this.cameras.main.fade(5000, 255,0,0, true, (cam:any, progress:number) => {
-            if(progress==1) {
-                this.time.addEvent({
-                    delay:3000,
-                    callback:() => {
-                        this.gs.events.emit('endscene');
-                    }
-                });
-                this.DisplayMessage('YouLose');
-            }
-        });
+        this.DisplayMessage('YouLose');
     }
 
     DisplayMessage(message:string) {
-        let m = this.add.image(240, 135, 'atlas', message);
+        let m = this.add.image(240, 135, 'atlas', message).setDepth(1000);
         // this.tweens.add({
         //     targets:m,
         //     duration:300, 
