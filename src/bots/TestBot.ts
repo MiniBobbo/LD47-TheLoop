@@ -8,6 +8,8 @@ export class TestBot extends Bot {
     constructor(gs:GameScene) {
         super(gs);
         
+        this.c.setPosition(300,100);
+
         this.baseName = 'Testbot';
         
         let body = new BotPiece(this);

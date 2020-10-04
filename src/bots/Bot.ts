@@ -14,7 +14,7 @@ export class Bot {
     private pieces:Array<BotPiece>;
     constructor(gs:GameScene) {
         this.gs = gs;
-        this.c = gs.add.container(450,200).setDepth(50);
+        this.c = gs.add.container(0,0).setDepth(50);
 
         this.pieces = [];
 

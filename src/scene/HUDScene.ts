@@ -2,10 +2,11 @@ import Phaser from 'phaser'
 import { GameScene } from './GameScene';
 
 export class HUDScene extends Phaser.Scene {
-    cockpit:Phaser.GameObjects.Sprite;
-    hpBar:Phaser.GameObjects.Graphics;
-    enemyBar:Phaser.GameObjects.Graphics;
-    hitGraphics:Phaser.GameObjects.Graphics;
+    private cockpit:Phaser.GameObjects.Sprite;
+    private hpBar:Phaser.GameObjects.Graphics;
+    private chargeBar:Phaser.GameObjects.Graphics;
+    private enemyBar:Phaser.GameObjects.Graphics;
+    private hitGraphics:Phaser.GameObjects.Graphics;
 
     gs:GameScene;
 
@@ -13,18 +14,18 @@ export class HUDScene extends Phaser.Scene {
 
     create() {
 
-        this.cockpit = this.add.sprite(0,0,'atlas', 'cockpit').setOrigin(0,0);
+        this.cockpit = this.add.sprite(0,0,'atlas', 'cockpit1').setOrigin(0,0).setDisplaySize(960,540);
 
         this.gs = this.scene.get('game') as GameScene;
 
-        let backBar = this.add.graphics({x:190, y:500});
+        let backBar = this.add.graphics({x:190, y:505});
         backBar.fillStyle(0x992222);
-        backBar.fillRect(0,0,1,32);
+        backBar.fillRect(0,0,1,25);
         backBar.scaleX = 575;
 
-        this.hpBar = this.add.graphics({x:190, y:500});
+        this.hpBar = this.add.graphics({x:190, y:505});
         this.hpBar.fillStyle(0xffff00);
-        this.hpBar.fillRect(0,0,1,32);
+        this.hpBar.fillRect(0,0,1,25);
         this.hpBar.scaleX = 575;
 
         let backBar2 = this.add.graphics({x:190, y:15});
@@ -39,19 +40,30 @@ export class HUDScene extends Phaser.Scene {
 
         this.debug = this.add.text(10,10, '');
 
+        let chargebackBar = this.add.graphics({x:200, y:490});
+        chargebackBar.fillStyle(0x666666);
+        chargebackBar.fillRect(0,0,1,15);
+        chargebackBar.scaleX = 555;
+
+        this.chargeBar = this.add.graphics({x:200, y:490});
+        this.chargeBar.fillStyle(0xffffff);
+        this.chargeBar.fillRect(0,0,1,15);
+        this.chargeBar.scaleX = 555;
 
 
         //Events
         this.events.on('player_damage', this.DamagePlayer, this);
         this.events.on('destroy', this.Destroy, this);
-
         this.gs.events.on('debug', this.AddDebug, this);
+        this.gs.events.on('firecharge', this.SetFireCharge, this);
+
     }
 
     Destroy() {
         this.events.removeListener('player_damage', this.DamagePlayer, this);
         this.events.removeListener('destroy', this.Destroy, this);
         this.gs.events.removeListener('debug', this.AddDebug, this);
+        this.gs.events.removeListener('firecharge', this.SetFireCharge, this);
 
     }
 
@@ -66,6 +78,12 @@ export class HUDScene extends Phaser.Scene {
         } else {
             this.debug.text = `${message}\n`;
         }
+    }
+
+    SetFireCharge(charge:number) {
+        // if(charge < 1000)
+            
+        this.chargeBar.scaleX = 555 * (charge / 2500);
     }
 
 } 

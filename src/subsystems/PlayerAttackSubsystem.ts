@@ -7,7 +7,7 @@ export class PlayerAttackSubsystem {
     gs:GameScene;
     attacks:Array<PlayerAttack>;
     FireDelay:number = 150;
-    MaxFireCharge:number = 1000;
+    MaxFireCharge:number = 2500;
     
     CurrentFireDelay:number = 500;
     CurrentFireCharge:number = 0;
@@ -52,14 +52,19 @@ export class PlayerAttackSubsystem {
     }
 
     private GetFireLevel():number {
-        if(this.CurrentFireCharge < 50)
+        if(this.CurrentFireCharge < 1000)
         return 1;
-        if(this.CurrentFireCharge < 100)
+        if(this.CurrentFireCharge < 2500)
         return 2;
         return 3;
     }
 
     Update(dt:number) {
+        this.attacks.forEach(element => {
+            element.update(dt);
+        });
+        if(this.gs.shield.active)
+            return;
         if(!this.FireReady && !this.gs.shield.active) {
             this.CurrentFireDelay -= dt;
             if(this.CurrentFireDelay <= 0) {
@@ -67,9 +72,12 @@ export class PlayerAttackSubsystem {
             }
         } else {
             this.CurrentFireCharge += dt;
+            if(this.CurrentFireCharge > 2500)
+            this.CurrentFireCharge = 2500;
         }
-        // this.gs.events.emit('debug', `Fire delay: ${this.CurrentFireDelay}\nFireReady: ${this.FireReady}`, false);
 
+        this.gs.events.emit('firecharge', this.CurrentFireCharge);
+            
         if(this.Firing && this.FireReady && !this.gs.shield.active) {
             let bd = new PlayerBulletDef();
             bd.x = this.gs.p.x;
@@ -79,9 +87,7 @@ export class PlayerAttackSubsystem {
         }
 
 
-        this.attacks.forEach(element => {
-            element.update(dt);
-        });
+
     }
 
 
